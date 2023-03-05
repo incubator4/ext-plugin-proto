@@ -1,5 +1,5 @@
 [package]
-name = "github.com/api7/ext-plugin-proto"
+name = "ext-plugin-proto"
 version = "0.1.0"
 edition = "2021"
 
