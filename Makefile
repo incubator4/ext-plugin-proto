@@ -37,5 +37,11 @@ typescript:
 	rm -rf typescript/a6/
 	mv a6/ typescript/
 
+.PHONY: rust
+rust:
+	flatc --rust --rust-module-root-file ext-plugin.fbs
+	rm -rf rust/src
+	mv a6/ rust/src/
+
 .PHONY: compiled
-compiled: lua java go python typescript
+compiled: lua java go python typescript rust
