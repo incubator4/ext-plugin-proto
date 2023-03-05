@@ -6,9 +6,6 @@
 use core::mem;
 use core::cmp::Ordering;
 
-extern crate serde;
-use self::serde::ser::{Serialize, Serializer, SerializeStruct};
-
 extern crate flatbuffers;
 use self::flatbuffers::{EndianScalar, Follow};
 
@@ -17,9 +14,6 @@ pub mod a6 {
 
   use core::mem;
   use core::cmp::Ordering;
-
-  extern crate serde;
-  use self::serde::ser::{Serialize, Serializer, SerializeStruct};
 
   extern crate flatbuffers;
   use self::flatbuffers::{EndianScalar, Follow};
@@ -119,15 +113,6 @@ impl core::fmt::Debug for Method {
     }
   }
 }
-impl Serialize for Method {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    serializer.serialize_unit_variant("Method", self.0 as u32, self.variant_name().unwrap())
-  }
-}
-
 impl<'a> flatbuffers::Follow<'a> for Method {
   type Inner = Self;
   #[inline]
@@ -244,26 +229,6 @@ impl<'a> Default for TextEntryArgs<'a> {
   }
 }
 
-impl Serialize for TextEntry<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let mut s = serializer.serialize_struct("TextEntry", 2)?;
-      if let Some(f) = self.name() {
-        s.serialize_field("name", &f)?;
-      } else {
-        s.skip_field("name")?;
-      }
-      if let Some(f) = self.value() {
-        s.serialize_field("value", &f)?;
-      } else {
-        s.skip_field("value")?;
-      }
-    s.end()
-  }
-}
-
 pub struct TextEntryBuilder<'a: 'b, 'b> {
   fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
   start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
@@ -372,26 +337,6 @@ impl<'a> Default for DataEntryArgs<'a> {
   }
 }
 
-impl Serialize for DataEntry<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let mut s = serializer.serialize_struct("DataEntry", 2)?;
-      if let Some(f) = self.name() {
-        s.serialize_field("name", &f)?;
-      } else {
-        s.skip_field("name")?;
-      }
-      if let Some(f) = self.value() {
-        s.serialize_field("value", &f)?;
-      } else {
-        s.skip_field("value")?;
-      }
-    s.end()
-  }
-}
-
 pub struct DataEntryBuilder<'a: 'b, 'b> {
   fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
   start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
@@ -433,9 +378,6 @@ pub mod err {
 
   use core::mem;
   use core::cmp::Ordering;
-
-  extern crate serde;
-  use self::serde::ser::{Serialize, Serializer, SerializeStruct};
 
   extern crate flatbuffers;
   use self::flatbuffers::{EndianScalar, Follow};
@@ -487,15 +429,6 @@ impl core::fmt::Debug for Code {
     }
   }
 }
-impl Serialize for Code {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    serializer.serialize_unit_variant("Code", self.0 as u32, self.variant_name().unwrap())
-  }
-}
-
 impl<'a> flatbuffers::Follow<'a> for Code {
   type Inner = Self;
   #[inline]
@@ -603,17 +536,6 @@ impl<'a> Default for RespArgs {
   }
 }
 
-impl Serialize for Resp<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let mut s = serializer.serialize_struct("Resp", 1)?;
-      s.serialize_field("code", &self.code())?;
-    s.end()
-  }
-}
-
 pub struct RespBuilder<'a: 'b, 'b> {
   fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
   start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
@@ -652,9 +574,6 @@ pub mod prepare_conf {
 
   use core::mem;
   use core::cmp::Ordering;
-
-  extern crate serde;
-  use self::serde::ser::{Serialize, Serializer, SerializeStruct};
 
   extern crate flatbuffers;
   use self::flatbuffers::{EndianScalar, Follow};
@@ -728,26 +647,6 @@ impl<'a> Default for ReqArgs<'a> {
       conf: None,
       key: None,
     }
-  }
-}
-
-impl Serialize for Req<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let mut s = serializer.serialize_struct("Req", 2)?;
-      if let Some(f) = self.conf() {
-        s.serialize_field("conf", &f)?;
-      } else {
-        s.skip_field("conf")?;
-      }
-      if let Some(f) = self.key() {
-        s.serialize_field("key", &f)?;
-      } else {
-        s.skip_field("key")?;
-      }
-    s.end()
   }
 }
 
@@ -850,17 +749,6 @@ impl<'a> Default for RespArgs {
   }
 }
 
-impl Serialize for Resp<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let mut s = serializer.serialize_struct("Resp", 1)?;
-      s.serialize_field("conf_token", &self.conf_token())?;
-    s.end()
-  }
-}
-
 pub struct RespBuilder<'a: 'b, 'b> {
   fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
   start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
@@ -899,9 +787,6 @@ pub mod httpreq_call {
 
   use core::mem;
   use core::cmp::Ordering;
-
-  extern crate serde;
-  use self::serde::ser::{Serialize, Serializer, SerializeStruct};
 
   extern crate flatbuffers;
   use self::flatbuffers::{EndianScalar, Follow};
@@ -953,15 +838,6 @@ impl core::fmt::Debug for Action {
     }
   }
 }
-impl Serialize for Action {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    serializer.serialize_unit_variant("Action", self.0 as u32, self.variant_name().unwrap())
-  }
-}
-
 impl<'a> flatbuffers::Follow<'a> for Action {
   type Inner = Self;
   #[inline]
@@ -1125,39 +1001,6 @@ impl<'a> Default for ReqArgs<'a> {
   }
 }
 
-impl Serialize for Req<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let mut s = serializer.serialize_struct("Req", 7)?;
-      s.serialize_field("id", &self.id())?;
-      if let Some(f) = self.src_ip() {
-        s.serialize_field("src_ip", &f)?;
-      } else {
-        s.skip_field("src_ip")?;
-      }
-      s.serialize_field("method", &self.method())?;
-      if let Some(f) = self.path() {
-        s.serialize_field("path", &f)?;
-      } else {
-        s.skip_field("path")?;
-      }
-      if let Some(f) = self.args() {
-        s.serialize_field("args", &f)?;
-      } else {
-        s.skip_field("args")?;
-      }
-      if let Some(f) = self.headers() {
-        s.serialize_field("headers", &f)?;
-      } else {
-        s.skip_field("headers")?;
-      }
-      s.serialize_field("conf_token", &self.conf_token())?;
-    s.end()
-  }
-}
-
 pub struct ReqBuilder<'a: 'b, 'b> {
   fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
   start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
@@ -1300,27 +1143,6 @@ impl<'a> Default for StopArgs<'a> {
   }
 }
 
-impl Serialize for Stop<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let mut s = serializer.serialize_struct("Stop", 3)?;
-      s.serialize_field("status", &self.status())?;
-      if let Some(f) = self.headers() {
-        s.serialize_field("headers", &f)?;
-      } else {
-        s.skip_field("headers")?;
-      }
-      if let Some(f) = self.body() {
-        s.serialize_field("body", &f)?;
-      } else {
-        s.skip_field("body")?;
-      }
-    s.end()
-  }
-}
-
 pub struct StopBuilder<'a: 'b, 'b> {
   fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
   start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
@@ -1449,36 +1271,6 @@ impl<'a> Default for RewriteArgs<'a> {
       args: None,
       resp_headers: None,
     }
-  }
-}
-
-impl Serialize for Rewrite<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let mut s = serializer.serialize_struct("Rewrite", 4)?;
-      if let Some(f) = self.path() {
-        s.serialize_field("path", &f)?;
-      } else {
-        s.skip_field("path")?;
-      }
-      if let Some(f) = self.headers() {
-        s.serialize_field("headers", &f)?;
-      } else {
-        s.skip_field("headers")?;
-      }
-      if let Some(f) = self.args() {
-        s.serialize_field("args", &f)?;
-      } else {
-        s.skip_field("args")?;
-      }
-      if let Some(f) = self.resp_headers() {
-        s.serialize_field("resp_headers", &f)?;
-      } else {
-        s.skip_field("resp_headers")?;
-      }
-    s.end()
   }
 }
 
@@ -1634,32 +1426,6 @@ impl<'a> Default for RespArgs {
   }
 }
 
-impl Serialize for Resp<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let mut s = serializer.serialize_struct("Resp", 3)?;
-      s.serialize_field("id", &self.id())?;
-      s.serialize_field("action_type", &self.action_type())?;
-      match self.action_type() {
-        Action::NONE => (),
-          Action::Stop => {
-            let f = self.action_as_stop()
-              .expect("Invalid union table, expected `Action::Stop`.");
-            s.serialize_field("action", &f)?;
-          }
-          Action::Rewrite => {
-            let f = self.action_as_rewrite()
-              .expect("Invalid union table, expected `Action::Rewrite`.");
-            s.serialize_field("action", &f)?;
-          }
-        _ => unimplemented!(),
-      }
-    s.end()
-  }
-}
-
 pub struct RespBuilder<'a: 'b, 'b> {
   fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
   start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
@@ -1728,9 +1494,6 @@ pub mod extra_info {
   use core::mem;
   use core::cmp::Ordering;
 
-  extern crate serde;
-  use self::serde::ser::{Serialize, Serializer, SerializeStruct};
-
   extern crate flatbuffers;
   use self::flatbuffers::{EndianScalar, Follow};
 
@@ -1785,15 +1548,6 @@ impl core::fmt::Debug for Info {
     }
   }
 }
-impl Serialize for Info {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    serializer.serialize_unit_variant("Info", self.0 as u32, self.variant_name().unwrap())
-  }
-}
-
 impl<'a> flatbuffers::Follow<'a> for Info {
   type Inner = Self;
   #[inline]
@@ -1903,21 +1657,6 @@ impl<'a> Default for VarArgs<'a> {
   }
 }
 
-impl Serialize for Var<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let mut s = serializer.serialize_struct("Var", 1)?;
-      if let Some(f) = self.name() {
-        s.serialize_field("name", &f)?;
-      } else {
-        s.skip_field("name")?;
-      }
-    s.end()
-  }
-}
-
 pub struct VarBuilder<'a: 'b, 'b> {
   fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
   start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
@@ -2002,16 +1741,6 @@ impl<'a> Default for ReqBodyArgs {
   }
 }
 
-impl Serialize for ReqBody<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let s = serializer.serialize_struct("ReqBody", 0)?;
-    s.end()
-  }
-}
-
 pub struct ReqBodyBuilder<'a: 'b, 'b> {
   fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
   start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
@@ -2088,16 +1817,6 @@ impl<'a> Default for RespBodyArgs {
   fn default() -> Self {
     RespBodyArgs {
     }
-  }
-}
-
-impl Serialize for RespBody<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let s = serializer.serialize_struct("RespBody", 0)?;
-    s.end()
   }
 }
 
@@ -2235,36 +1954,6 @@ impl<'a> Default for ReqArgs {
   }
 }
 
-impl Serialize for Req<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let mut s = serializer.serialize_struct("Req", 2)?;
-      s.serialize_field("info_type", &self.info_type())?;
-      match self.info_type() {
-        Info::NONE => (),
-          Info::Var => {
-            let f = self.info_as_var()
-              .expect("Invalid union table, expected `Info::Var`.");
-            s.serialize_field("info", &f)?;
-          }
-          Info::ReqBody => {
-            let f = self.info_as_req_body()
-              .expect("Invalid union table, expected `Info::ReqBody`.");
-            s.serialize_field("info", &f)?;
-          }
-          Info::RespBody => {
-            let f = self.info_as_resp_body()
-              .expect("Invalid union table, expected `Info::RespBody`.");
-            s.serialize_field("info", &f)?;
-          }
-        _ => unimplemented!(),
-      }
-    s.end()
-  }
-}
-
 pub struct ReqBuilder<'a: 'b, 'b> {
   fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
   start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
@@ -2390,21 +2079,6 @@ impl<'a> Default for RespArgs<'a> {
   }
 }
 
-impl Serialize for Resp<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let mut s = serializer.serialize_struct("Resp", 1)?;
-      if let Some(f) = self.result() {
-        s.serialize_field("result", &f)?;
-      } else {
-        s.skip_field("result")?;
-      }
-    s.end()
-  }
-}
-
 pub struct RespBuilder<'a: 'b, 'b> {
   fbb_: &'b mut flatbuffers::FlatBufferBuilder<'a>,
   start_: flatbuffers::WIPOffset<flatbuffers::TableUnfinishedWIPOffset>,
@@ -2443,9 +2117,6 @@ pub mod httpresp_call {
 
   use core::mem;
   use core::cmp::Ordering;
-
-  extern crate serde;
-  use self::serde::ser::{Serialize, Serializer, SerializeStruct};
 
   extern crate flatbuffers;
   use self::flatbuffers::{EndianScalar, Follow};
@@ -2537,24 +2208,6 @@ impl<'a> Default for ReqArgs<'a> {
       headers: None,
       conf_token: 0,
     }
-  }
-}
-
-impl Serialize for Req<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let mut s = serializer.serialize_struct("Req", 4)?;
-      s.serialize_field("id", &self.id())?;
-      s.serialize_field("status", &self.status())?;
-      if let Some(f) = self.headers() {
-        s.serialize_field("headers", &f)?;
-      } else {
-        s.skip_field("headers")?;
-      }
-      s.serialize_field("conf_token", &self.conf_token())?;
-    s.end()
   }
 }
 
@@ -2691,28 +2344,6 @@ impl<'a> Default for RespArgs<'a> {
       headers: None,
       body: None,
     }
-  }
-}
-
-impl Serialize for Resp<'_> {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-  where
-    S: Serializer,
-  {
-    let mut s = serializer.serialize_struct("Resp", 4)?;
-      s.serialize_field("id", &self.id())?;
-      s.serialize_field("status", &self.status())?;
-      if let Some(f) = self.headers() {
-        s.serialize_field("headers", &f)?;
-      } else {
-        s.skip_field("headers")?;
-      }
-      if let Some(f) = self.body() {
-        s.serialize_field("body", &f)?;
-      } else {
-        s.skip_field("body")?;
-      }
-    s.end()
   }
 }
 
